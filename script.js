@@ -154,25 +154,48 @@ function closeGame() {
 
 function startSnake() {
     gameArea.innerHTML = `
-        <h3>Eat food and grow!</h3>
-        <p>Use Arrow Keys to move.</p>
-        <p>Score: <span id="snakeScore">0</span></p>
+    <h3>🐍 Snake Game</h3>
+    <p>Use buttons or arrow keys to move!</p>
+    <p>Score: <span id="snakeScore">0</span></p>
 
-        <canvas id="snakeCanvas"
-        width="300" height="300"
-        style="background:#080d16;
-        border:1px solid #00ff99;
-        margin-top:15px">
-        </canvas>
+    <canvas id="snakeCanvas"
+    width="300" height="300"
+    style="background:#080d16;
+    border:1px solid #00ff99;
+    margin-top:15px">
+    </canvas>
 
-        <button onclick="openGame('snake')"
-        class="play-btn"
-        style="margin-top:15px;
-        border:none;
-        cursor:pointer">
-            Restart Snake
-        </button>
-    `;
+    <!-- Mobile Controls -->
+    <div style="
+        display:grid;
+        grid-template-columns:60px 60px 60px;
+        gap:8px;
+        justify-content:center;
+        margin:20px auto;
+    ">
+        <div></div>
+
+        <button onclick="snakeMove('UP')"
+        style="font-size:25px;padding:10px;">⬆️</button>
+
+        <div></div>
+
+        <button onclick="snakeMove('LEFT')"
+        style="font-size:25px;padding:10px;">⬅️</button>
+
+        <button onclick="snakeMove('DOWN')"
+        style="font-size:25px;padding:10px;">⬇️</button>
+
+        <button onclick="snakeMove('RIGHT')"
+        style="font-size:25px;padding:10px;">➡️</button>
+    </div>
+
+    <button onclick="openGame('snake')"
+    class="play-btn"
+    style="margin-top:10px;border:none;">
+        🔄 Restart Snake
+    </button>
+`;
 
     const c = document.getElementById("snakeCanvas");
     const ctx = c.getContext("2d");
@@ -271,31 +294,33 @@ function startSnake() {
     }
 
     keyHandler = function(e) {
-        const keys = {
-            ArrowUp: "UP",
-            ArrowDown: "DOWN",
-            ArrowLeft: "LEFT",
-            ArrowRight: "RIGHT"
-        };
-
-        if (!keys[e.key]) return;
-
-        e.preventDefault();
-
-        const opposite = {
-            UP: "DOWN",
-            DOWN: "UP",
-            LEFT: "RIGHT",
-            RIGHT: "LEFT"
-        };
-
-        if (keys[e.key] !== opposite[dir]) {
-            nextDir = keys[e.key];
-        }
+        window.snakeMove = function(direction) {
+    const opposite = {
+        UP: "DOWN",
+        DOWN: "UP",
+        LEFT: "RIGHT",
+        RIGHT: "LEFT"
     };
 
-    document.addEventListener("keydown", keyHandler);
+    if (direction !== opposite[dir]) {
+        nextDir = direction;
+    }
+};
+keyHandler = function(e) {
+    const keys = {
+        ArrowUp: "UP",
+        ArrowDown: "DOWN",
+        ArrowLeft: "LEFT",
+        ArrowRight: "RIGHT"
+    };
 
+    if (!keys[e.key]) return;
+
+    e.preventDefault();
+    snakeMove(keys[e.key]);
+};
+
+document.addEventListener("keydown", keyHandler);
     draw();
 
     addTimer(setInterval(tick, 130));
